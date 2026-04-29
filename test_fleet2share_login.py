@@ -11,14 +11,13 @@ import time
 # ===================================================================
 class Fleet2ShareLocators:
     # Login Page Locators
-    # Login Page Locators (Updated for MUI components)
-    EMAIL_INPUT = "input[placeholder*='mail']"   # Matches 'Emailadres invullen' or 'Email'
-    PASSWORD_INPUT = "input[type='password']"
-    LOGIN_BUTTON = "button.MuiButton-contained"  # Primary MUI button
+    EMAIL_INPUT = (By.XPATH, "//input[contains(@placeholder, 'mail')]")
+    PASSWORD_INPUT = (By.XPATH, "//input[contains(@type, 'password')]")
+    LOGIN_BUTTON = (By.XPATH, "//button[contains(@class, 'MuiButton-contained')]")
     
     # Validation/Message Locators
-    ERROR_MESSAGE = "div[role='status']"         # Toast notification notification
-    DASHBOARD_ELEMENT = "main"                   # Generic element to check for successful login
+    ERROR_MESSAGE = (By.XPATH, "//div[contains(@role, 'status')]")
+    DASHBOARD_ELEMENT = (By.XPATH, "//main")
 
 
 # ===================================================================
@@ -63,7 +62,7 @@ class LoginPage:
     def enter_email(self, email):
         status = f"Entering {'Valid' if '@' in email else 'Invalid'} Email: {email}"
         self.show_status(status)
-        element = self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, Fleet2ShareLocators.EMAIL_INPUT)))
+        element = self.wait.until(EC.visibility_of_element_located(Fleet2ShareLocators.EMAIL_INPUT))
         element.clear()
         element.send_keys(email)
         time.sleep(2)  # Delay for visibility
@@ -71,24 +70,24 @@ class LoginPage:
     def enter_password(self, password):
         status = f"Entering {'Valid' if len(password) >= 8 else 'Short/Invalid'} Password: {password}"
         self.show_status(status)
-        element = self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, Fleet2ShareLocators.PASSWORD_INPUT)))
+        element = self.wait.until(EC.visibility_of_element_located(Fleet2ShareLocators.PASSWORD_INPUT))
         element.clear()
         element.send_keys(password)
         time.sleep(2)  # Delay for visibility
         
     def click_login(self):
         self.show_status("Clicking Login Button...")
-        element = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, Fleet2ShareLocators.LOGIN_BUTTON)))
+        element = self.wait.until(EC.element_to_be_clickable(Fleet2ShareLocators.LOGIN_BUTTON))
         element.click()
         time.sleep(2)  # Delay for visibility
         
     def get_error_message(self):
-        element = self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, Fleet2ShareLocators.ERROR_MESSAGE)))
+        element = self.wait.until(EC.visibility_of_element_located(Fleet2ShareLocators.ERROR_MESSAGE))
         return element.text
 
     def is_dashboard_loaded(self):
         try:
-            self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, Fleet2ShareLocators.DASHBOARD_ELEMENT)))
+            self.wait.until(EC.visibility_of_element_located(Fleet2ShareLocators.DASHBOARD_ELEMENT))
             return True
         except:
             return False
